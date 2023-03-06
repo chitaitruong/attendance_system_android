@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentationLayer.QLDSLopActivity">
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/back_button"
+        android:id="@+id/back_button"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:layout_marginTop="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:text="Danh sách lớp"
+        android:textColor="#000000"
+        android:textSize="40dp"
+        android:textStyle="italic"
+        android:id="@+id/tv_danhsach_lop"/>
+
+    <!--<RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/tv_registered_hotels"
+        android:layout_marginStart="50dp"
+        android:background="@drawable/curved_rectangle"
+        android:backgroundTint="#DAD9D9"
+        android:layout_marginTop="10dp"
+        android:id="@+id/rl_search">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_centerInParent="true"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/search_icon"
+            android:id="@+id/search_icon"
+            android:layout_marginStart="10dp"/>
+
+        <EditText
+            android:id="@+id/search_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="20dp"
+            android:layout_toEndOf="@+id/search_icon"
+            android:background="@null"
+            android:hint="Search by name"
+            android:textColor="#696969"
+            android:textColorHint="#696969" />
+    </RelativeLayout>-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_danhsach_lop"
+        android:orientation="horizontal"
+        android:layout_marginStart="10dp"
+        android:id="@+id/ma_giangvien">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mã GV: "
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="#ccccff"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="n19dcat067"
+            android:textSize="20dp"
+            android:textColor="#009900"
+            android:textStyle="bold"
+            android:id="@+id/tv_ma_giangvien"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ma_giangvien"
+        android:orientation="horizontal"
+        android:layout_marginStart="10dp"
+        android:id="@+id/ten_giangvien">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tên GV: "
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="#ccccff"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nguyen Van A"
+            android:textSize="20dp"
+            android:textColor="#009900"
+            android:textStyle="bold"
+            android:id="@+id/tv_ten_giangvien"/>
+    </LinearLayout>
+    <!--<TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_below="@+id/tv_danhsach_lop"
+        android:text="Mã GV: gv001"
+        android:textSize="20dp"
+        android:textColor="#000000"
+        android:id="@+id/tv_ma_giangvien"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_below="@+id/tv_ma_giangvien"
+        android:text="Tên GV: Nguyen Van A"
+        android:textSize="20dp"
+        android:textColor="#000000"
+        android:id="@+id/tv_ten_giangvien"/>-->
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:backgroundTint="#938383"
+        android:layout_below="@+id/ten_giangvien"
+        android:id="@+id/headings"
+        android:weightSum="4">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.7"
+            android:layout_height="match_parent"
+            android:textSize="16dp"
+            android:text="ID"
+            android:textColor="#000000"
+            android:gravity="center"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.8"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:text="Tên lớp"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1.25"
+            android:layout_height="match_parent"
+            android:textSize="16dp"
+            android:text="Năm"
+            android:textColor="#000000"
+            android:gravity="center"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1.25"
+            android:layout_height="match_parent"
+            android:textSize="16dp"
+            android:text="Số lượng sinh viên"
+            android:textColor="#000000"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:gravity="center"
+            />
+
+    </LinearLayout>
+    <View
+        android:background="#000"
+        android:layout_width="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_height="0.6dp"
+        android:layout_below="@+id/headings"
+        android:id="@+id/line2" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv"
+        android:layout_width="match_parent"
+        android:layout_height="580dp"
+        android:layout_below="@+id/line2">
+    </androidx.recyclerview.widget.RecyclerView>
+</RelativeLayout>
