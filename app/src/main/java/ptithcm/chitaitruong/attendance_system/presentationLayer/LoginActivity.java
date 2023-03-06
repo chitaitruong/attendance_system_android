@@ -2,6 +2,7 @@ package ptithcm.chitaitruong.attendance_system.presentationLayer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -15,6 +16,8 @@ public class LoginActivity extends AppCompatActivity {
     EditText edt_username, edt_password;
     RelativeLayout login_button;
     TextView tv_signup;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
