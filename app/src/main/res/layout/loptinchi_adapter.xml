@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/MainBack"
+    android:weightSum="10">
+
+    <LinearLayout
+        android:id="@+id/layout_click2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="9"
+        android:foreground="?attr/selectableItemBackground"
+        android:padding="12dp"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tvLopTinChi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="INT1234 - Kiem thu xam nhap"
+            android:textColor="@color/text_color_dark"
+            android:textSize="18dp"/>
+        <TextView
+            android:id="@+id/tvHocKy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hoc ky 2 Nam 2022-2023"/>
+    </LinearLayout>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/update"
+        android:layout_gravity="center"
+        android:layout_weight="0.5"
+        android:id="@+id/update"
+        />
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/delete"
+        android:layout_gravity="center"
+        android:layout_weight="0.5"
+        android:id="@+id/delete"
+        />
+
+
+</LinearLayout>

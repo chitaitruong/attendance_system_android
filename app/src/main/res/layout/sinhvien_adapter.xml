@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity3"
-    android:orientation="vertical">
-    <Button
+    android:layout_height="wrap_content"
+    android:id="@+id/layout_click3">
+    <TextView
+        android:id="@+id/tvHoTen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button"/>
-    <ListView
-        android:id="@+id/lvDSngay"
+        android:text="Truong Chi Tai"
+        android:textColor="@color/text_color_dark"
+        android:textSize="18dp"/>
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="#183BFD"
-        android:dividerHeight="3dp" />
+        android:id="@+id/tvMaSv"
+       />
 </LinearLayout>

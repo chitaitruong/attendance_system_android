@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/MainBack"
-    tools:context=".MainActivity2">
+    tools:context=".loptinchi">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -58,14 +58,14 @@
         app:fabAnimationMode="scale"
         app:menu="@menu/bottom_app_bar"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_main"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/gradient_theme_oval"
-        app:layout_anchor="@id/bottomAppBar"
-        app:borderWidth="0dp"
-        app:tint="@null"
-        />
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/fab_main"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:src="@drawable/gradient_theme_oval"-->
+<!--        app:layout_anchor="@id/bottomAppBar"-->
+<!--        app:borderWidth="0dp"-->
+<!--        app:tint="@null"-->
+<!--        />-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

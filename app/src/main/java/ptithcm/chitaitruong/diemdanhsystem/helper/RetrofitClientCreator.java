@@ -11,7 +11,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClientCreator {
-    public static final String BASE_URL = "http://172.20.10.3:8080/api/";
+    public static final String BASE_URL = "http://192.168.1.3:8080/api/";
     public static Retrofit getClientWithInterceptor(Context context) {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(new LoggingInterceptor())

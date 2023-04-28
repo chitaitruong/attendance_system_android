@@ -8,13 +8,30 @@ public class LopTinChi implements Serializable {
     private String monhoc;
     private Long hocky;
     private String namhoc;
+    private String giangvien;
 
+    public LopTinChi(Long id, String mamonhoc, String monhoc, Long hocky, String namhoc, String giangvien) {
+        this.id = id;
+        this.mamonhoc = mamonhoc;
+        this.monhoc = monhoc;
+        this.hocky = hocky;
+        this.namhoc = namhoc;
+        this.giangvien = giangvien;
+    }
     public LopTinChi(Long id, String mamonhoc, String monhoc, Long hocky, String namhoc) {
         this.id = id;
         this.mamonhoc = mamonhoc;
         this.monhoc = monhoc;
         this.hocky = hocky;
         this.namhoc = namhoc;
+    }
+
+    public String getGiangvien() {
+        return giangvien;
+    }
+
+    public void setGiangvien(String giangvien) {
+        this.giangvien = giangvien;
     }
 
     public String getMamonhoc() {

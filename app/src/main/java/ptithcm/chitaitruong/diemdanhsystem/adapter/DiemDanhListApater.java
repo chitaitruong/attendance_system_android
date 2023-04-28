@@ -21,11 +21,16 @@ import ptithcm.chitaitruong.diemdanhsystem.model.LopTinChi;
 
 public class DiemDanhListApater extends RecyclerView.Adapter<DiemDanhListApater.ViewHolder> {
     private ArrayList<DiemDanh> ds_diemdanh;
+    private RecyclerViewActionListener mListener;
 
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder)
      */
+    public interface RecyclerViewActionListener {
+        void onViewClicked(int clickedViewId, int clickedItemPosition);
+        void onViewLongClicked(int clickedViewId, int clickedItemPosition);
+    }
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvMaSv;
         private final TextView tvHoTen;
@@ -42,6 +47,7 @@ public class DiemDanhListApater extends RecyclerView.Adapter<DiemDanhListApater.
             radio_present = (RadioButton) view.findViewById(R.id.radio_present);
             radio_late = (RadioButton) view.findViewById(R.id.radio_late);
             radio_absent = (RadioButton) view.findViewById(R.id.radio_absent);
+            layout_click = (LinearLayout) view.findViewById(R.id.layout_click1);
         }
 
         public TextView getTvMaSv() {
@@ -99,8 +105,9 @@ public class DiemDanhListApater extends RecyclerView.Adapter<DiemDanhListApater.
      * @param dataSet String[] containing the data to populate views to be used
      * by RecyclerView
      */
-    public DiemDanhListApater(ArrayList<DiemDanh> ds_diemdanh) {
+    public DiemDanhListApater(ArrayList<DiemDanh> ds_diemdanh, RecyclerViewActionListener mListener) {
         this.ds_diemdanh = ds_diemdanh;
+        this.mListener = mListener;
     }
 
     // Create new views (invoked by the layout manager)
@@ -124,17 +131,48 @@ public class DiemDanhListApater extends RecyclerView.Adapter<DiemDanhListApater.
         switch (ds_diemdanh.get(position).getTrangThai().intValue()) {
             case 0:
                 viewHolder.getRadio_absent().setChecked(true);
-                viewHolder.getLayout_click().setBackgroundResource(R.drawable.gradient_color_2);
+                //viewHolder.getLayout_click().setBackgroundResource(R.drawable.gradient_color_2);
                 break;
             case 1:
                 viewHolder.getRadio_present().setChecked(true);
-                viewHolder.getLayout_click().setBackgroundResource(R.drawable.gradient_color_1);
+                //viewHolder.getLayout_click().setBackgroundResource(R.drawable.gradient_color_1);
                 break;
             case 2:
                 viewHolder.getRadio_late().setChecked(true);
-                viewHolder.getLayout_click().setBackgroundResource(R.drawable.gradient_color_3);
+                //viewHolder.getLayout_click().setBackgroundResource(R.drawable.gradient_color_3);
                 break;
         }
+        viewHolder.getLayout_click().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onViewClicked(view.getId(), viewHolder.getAdapterPosition());
+            }
+        });
+        viewHolder.getLayout_click().setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                mListener.onViewLongClicked(view.getId(), viewHolder.getAdapterPosition());
+                return false;
+            }
+        });
+        viewHolder.getRadio_late().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onViewClicked(view.getId(), viewHolder.getAdapterPosition());
+            }
+        });
+        viewHolder.getRadio_present().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onViewClicked(view.getId(), viewHolder.getAdapterPosition());
+            }
+        });
+        viewHolder.getRadio_absent().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onViewClicked(view.getId(), viewHolder.getAdapterPosition());
+            }
+        });
     }
 
     @Override

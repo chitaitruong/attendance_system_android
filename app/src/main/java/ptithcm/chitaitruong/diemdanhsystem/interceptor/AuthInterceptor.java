@@ -19,7 +19,7 @@ public class AuthInterceptor implements Interceptor {
     private final String PREFS_KEY_TOKEN = "PREFS_KEY_TOKEN";
     public AuthInterceptor(Context ctx) {
         this.context = ctx;
-        this.mPrefs= context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        this.mPrefs = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         mPrefsEdit=mPrefs.edit();
     }
     @Override
