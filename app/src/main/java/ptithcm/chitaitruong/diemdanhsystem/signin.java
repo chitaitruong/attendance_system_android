@@ -94,7 +94,7 @@ public class signin extends AppCompatActivity {
         final int[] code = new int[1];
         Response<ResponseBody> response = call.execute();
         code[0] = response.code();
-        if (code[0] == 200) {
+        if (code[0]==200) {
             JSONObject jsonObject = new JSONObject(response.body().string());
             sharedPreferences.edit().putString("PREFS_KEY_TOKEN",jsonObject.getString("accessToken")).apply();
             Toast.makeText(this, "Login success", Toast.LENGTH_SHORT).show();
@@ -122,6 +122,17 @@ public class signin extends AppCompatActivity {
         } else {
             Toast.makeText(signin.this, "Something went wrong", Toast.LENGTH_SHORT).show();
         }
+        //for test
+//        boolean isAdmin = true;
+//        if (isAdmin) {
+//            Intent intent = new Intent(signin.this, quanlyloptinchi.class);
+//            startActivity(intent);
+//            finish();
+//        } else {
+//            Intent intent = new Intent(signin.this, loptinchi.class);
+//            startActivity(intent);
+//            finish();
+//        }
     }
     void testAll() {
         TestService testService = retrofit.create(TestService.class);
