@@ -78,12 +78,26 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="LOG IN"
+            android:text="Đăng nhập"
             android:textColor="#FFFFFF"
             android:layout_centerInParent="true"
             android:textStyle="bold"/>
     </RelativeLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/log_in_button"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quên mật khẩu? "
+            android:textColor="#FF0F0F"
+            android:id="@+id/tv_forgot_pass"/>
+    </LinearLayout>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -95,19 +109,19 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Don't have a "
+            android:text="Chưa có "
             android:textColor="#000000"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=" account? "
+            android:text=" tài khoản? "
             android:textColor="#000000"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SIGN UP"
+            android:text="Đăng ký"
             android:textColor="#FF0F0F"
             android:id="@+id/tv_sign_up"/>
     </LinearLayout>

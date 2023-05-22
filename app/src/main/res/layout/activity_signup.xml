@@ -142,6 +142,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="15dp"
             android:background="@null"
+            android:inputType="number"
             android:hint="Số điện thoại" />
     </RelativeLayout>
 
@@ -240,12 +241,12 @@
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
     </RelativeLayout>
-
     <RelativeLayout
+        android:visibility="gone"
         android:id="@+id/otp"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_below="@id/sign_up_button"
+        android:layout_below="@id/dangky"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="30dp"
         android:layout_marginTop="15dp">
@@ -266,7 +267,8 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/validate_otp_button"
+        android:visibility="gone"
+        android:id="@+id/bt_xacthucotp"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_below="@id/otp"
@@ -284,8 +286,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Validate OTP"
+            android:text="Xác thực OTP"
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
     </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/guilaiotp"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/bt_xacthucotp"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quên mật khẩu? "
+        android:textColor="#FF0F0F"
+        android:id="@+id/timer"/>
+    </LinearLayout>
 </RelativeLayout>

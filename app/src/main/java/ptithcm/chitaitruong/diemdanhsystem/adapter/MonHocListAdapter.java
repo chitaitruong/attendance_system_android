@@ -110,7 +110,7 @@ public class MonHocListAdapter extends RecyclerView.Adapter<MonHocListAdapter.Vi
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         viewHolder.getTvMonHoc().setText(ds_loptinchi.get(position).getMamonhoc() + " - " + ds_loptinchi.get(position).getMonhoc());
-        viewHolder.getTvMonHoc().setText("Học kỳ " + ds_loptinchi.get(position).getHocky() + " Năm " + ds_loptinchi.get(position).getNamhoc());
+        viewHolder.getTvHocKy().setText("Học kỳ " + ds_loptinchi.get(position).getHocky() + " Năm " + ds_loptinchi.get(position).getNamhoc());
         viewHolder.getLayout_click2().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

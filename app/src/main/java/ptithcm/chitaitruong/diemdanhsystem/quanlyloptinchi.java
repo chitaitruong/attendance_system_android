@@ -82,7 +82,8 @@ public class quanlyloptinchi extends AppCompatActivity implements MonHocListAdap
                 Intent intent = new Intent(quanlyloptinchi.this, DetailLopTinChi.class);
                 //Intent intent = new Intent(loptinchi.this, DetailLopTinChi.class);
                 intent.putExtra("loptinchi",ds_loptinchi.get(clickedItemPosition));
-                startActivity(intent);                break;
+                startActivity(intent);
+                break;
             case R.id.update:
                 Toast.makeText(this, "Update", Toast.LENGTH_SHORT).show();
                 break;
