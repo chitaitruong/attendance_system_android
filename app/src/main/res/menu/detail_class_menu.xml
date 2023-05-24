@@ -2,23 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/feedback"
-        android:title="Send Feedback"
+        android:id="@+id/xuatfile"
+        android:title="Xuất điểm CC"
         android:contentDescription="more"
         app:showAsAction="never"
         />
     <item
         android:id="@+id/help"
         android:title="Help"
-        android:contentDescription="more"
+        android:contentDescription="Help"
         app:showAsAction="never"
         />
-    <item
-        android:id="@+id/more"
-        android:title="more"
-        android:contentDescription="more"
-        app:showAsAction="never"
-        >
-
-    </item>
 </menu>

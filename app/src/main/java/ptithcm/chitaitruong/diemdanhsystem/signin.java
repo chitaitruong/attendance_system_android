@@ -51,7 +51,7 @@ public class signin extends AppCompatActivity {
         //retrofit = RetrofitClientCreator.getClientWithInterceptor(this);
         retrofit = new Retrofit.Builder()
 
-                .baseUrl("http://192.168.2.30:8080/api/")
+                .baseUrl("http://10.252.5.98:8080/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -63,6 +63,7 @@ public class signin extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                //testAll();
                 try {
                     validateLogin(et_username.getText().toString(),et_password.getText().toString());
                 } catch (IOException e) {
@@ -97,41 +98,44 @@ public class signin extends AppCompatActivity {
     }
 
     void validateLogin(String username, String password) throws IOException, JSONException {
-//        AuthService authService = retrofit.create(AuthService.class);
-//        Call<ResponseBody> call = authService.login(new LoginRequest(username,password));
-//        final int[] code = new int[1];
-//        Response<ResponseBody> response = call.execute();
-//        code[0] = response.code();
-//        if (code[0]==200) {
-//            JSONObject jsonObject = new JSONObject(response.body().string());
-//            sharedPreferences.edit().putString("PREFS_KEY_TOKEN",jsonObject.getString("accessToken")).apply();
-//            Toast.makeText(this, "Login success", Toast.LENGTH_SHORT).show();
-//            JSONArray jArray = jsonObject.getJSONArray("roles");
-//            boolean isAdmin = false;
-//            if (jArray != null) {
-//                for (int i=0;i<jArray.length();i++){
-//                    if (jArray.getString(i).equals("ROLE_ADMIN")) {
-//                        isAdmin = true;
-//                        break;
-//                    }
-//                }
-//            }
-//            if (isAdmin) {
-//                Intent intent = new Intent(signin.this, quanlyloptinchi.class);
-//                startActivity(intent);
-//                finish();
-//            } else {
-//                Intent intent = new Intent(signin.this, loptinchi.class);
-//                startActivity(intent);
-//                finish();
-//            }
-//        } else if (code[0] == 401){
-//            Toast.makeText(signin.this, "Username or password is invalid", Toast.LENGTH_SHORT).show();
-//        } else {
-//            Toast.makeText(signin.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-//        }
+        AuthService authService = retrofit.create(AuthService.class);
+        Call<ResponseBody> call = authService.login(new LoginRequest(username,password));
+        final int[] code = new int[1];
+        Response<ResponseBody> response = call.execute();
+        code[0] = response.code();
+        if (code[0]==200) {
+            JSONObject jsonObject = new JSONObject(response.body().string());
+            sharedPreferences.edit().putString("PREFS_KEY_TOKEN",jsonObject.getString("accessToken")).apply();
+            Toast.makeText(this, "Login success", Toast.LENGTH_SHORT).show();
+            JSONArray jArray = jsonObject.getJSONArray("roles");
+            boolean isAdmin = false;
+            if (jArray != null) {
+                for (int i=0;i<jArray.length();i++){
+                    if (jArray.getString(i).equals("ROLE_ADMIN")) {
+                        isAdmin = true;
+                        break;
+                    }
+                }
+            }
+
+            if (isAdmin) {
+                Intent intent = new Intent(signin.this, quanlyloptinchi.class);
+                intent.putExtra("username", jsonObject.getString("username"));
+                startActivity(intent);
+                finish();
+            } else {
+                Intent intent = new Intent(signin.this, loptinchi.class);
+                intent.putExtra("username", jsonObject.getString("username"));
+                startActivity(intent);
+                finish();
+            }
+        } else if (code[0] == 401){
+            Toast.makeText(signin.this, "Username or password is invalid", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(signin.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+        }
         //for test
-        boolean isAdmin = true;
+        /*boolean isAdmin = false;
         if (isAdmin) {
             Intent intent = new Intent(signin.this, quanlyloptinchi.class);
             startActivity(intent);
@@ -140,7 +144,7 @@ public class signin extends AppCompatActivity {
             Intent intent = new Intent(signin.this, loptinchi.class);
             startActivity(intent);
             finish();
-        }
+        }*/
     }
     void testAll() {
         TestService testService = retrofit.create(TestService.class);
@@ -156,8 +160,10 @@ public class signin extends AppCompatActivity {
                 }
             }
 
+
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(signin.this, "Failed", Toast.LENGTH_SHORT).show();
 
             }
         });

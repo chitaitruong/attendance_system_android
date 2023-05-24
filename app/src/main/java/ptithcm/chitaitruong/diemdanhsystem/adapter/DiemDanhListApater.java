@@ -13,6 +13,9 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 import ptithcm.chitaitruong.diemdanhsystem.R;
@@ -28,7 +31,7 @@ public class DiemDanhListApater extends RecyclerView.Adapter<DiemDanhListApater.
      * (custom ViewHolder)
      */
     public interface RecyclerViewActionListener {
-        void onViewClicked(int clickedViewId, int clickedItemPosition);
+        void onViewClicked(int clickedViewId, int clickedItemPosition) throws IOException, JSONException;
         void onViewLongClicked(int clickedViewId, int clickedItemPosition);
     }
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -133,11 +136,11 @@ public class DiemDanhListApater extends RecyclerView.Adapter<DiemDanhListApater.
                 viewHolder.getRadio_absent().setChecked(true);
                 //viewHolder.getLayout_click().setBackgroundResource(R.drawable.gradient_color_2);
                 break;
-            case 1:
+            case 2:
                 viewHolder.getRadio_present().setChecked(true);
                 //viewHolder.getLayout_click().setBackgroundResource(R.drawable.gradient_color_1);
                 break;
-            case 2:
+            case 1:
                 viewHolder.getRadio_late().setChecked(true);
                 //viewHolder.getLayout_click().setBackgroundResource(R.drawable.gradient_color_3);
                 break;
@@ -145,7 +148,13 @@ public class DiemDanhListApater extends RecyclerView.Adapter<DiemDanhListApater.
         viewHolder.getLayout_click().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onViewClicked(view.getId(), viewHolder.getAdapterPosition());
+                try {
+                    mListener.onViewClicked(view.getId(), viewHolder.getAdapterPosition());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         viewHolder.getLayout_click().setOnLongClickListener(new View.OnLongClickListener() {
@@ -158,19 +167,37 @@ public class DiemDanhListApater extends RecyclerView.Adapter<DiemDanhListApater.
         viewHolder.getRadio_late().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onViewClicked(view.getId(), viewHolder.getAdapterPosition());
+                try {
+                    mListener.onViewClicked(view.getId(), viewHolder.getAdapterPosition());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         viewHolder.getRadio_present().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onViewClicked(view.getId(), viewHolder.getAdapterPosition());
+                try {
+                    mListener.onViewClicked(view.getId(), viewHolder.getAdapterPosition());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         viewHolder.getRadio_absent().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onViewClicked(view.getId(), viewHolder.getAdapterPosition());
+                try {
+                    mListener.onViewClicked(view.getId(), viewHolder.getAdapterPosition());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }

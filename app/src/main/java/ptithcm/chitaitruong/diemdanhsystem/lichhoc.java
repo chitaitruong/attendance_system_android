@@ -1,5 +1,6 @@
 package ptithcm.chitaitruong.diemdanhsystem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,18 +18,29 @@ import android.widget.Toast;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import okhttp3.ResponseBody;
 import ptithcm.chitaitruong.diemdanhsystem.adapter.NgayListAdapter;
 import ptithcm.chitaitruong.diemdanhsystem.adapter.RecyclerItemClickListener;
+import ptithcm.chitaitruong.diemdanhsystem.helper.RetrofitClientCreator;
 import ptithcm.chitaitruong.diemdanhsystem.model.LopTinChi;
 import ptithcm.chitaitruong.diemdanhsystem.model.Ngay;
+import ptithcm.chitaitruong.diemdanhsystem.service.LopTinChiService;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class lichhoc extends AppCompatActivity {
     RecyclerView recyclerView;
     TextView hocky_detail;
     ImageView imageView;
+    Retrofit retrofit;
     ArrayList<Ngay> ds_ngay = new ArrayList<>();
     LopTinChi lopTinChi;
     NgayListAdapter ngayListAdapter;
@@ -36,20 +49,46 @@ public class lichhoc extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lichhoc);
         getWindow().setExitTransition(null);
+        retrofit = RetrofitClientCreator.getClientWithInterceptor(this);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Toolbar toolbar = findViewById(R.id.toolbar_class_detail1);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setControl();
-        setEvent();
+        try {
+            setEvent();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.detail_class_menu, menu);
         return true;
     }
-    private void setEvent() {
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                super.onBackPressed();
+                return true;
+            case R.id.xuatfile:
+                Toast.makeText(this, "Xuat file", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.help:
+                Toast.makeText(this, "Help", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void setEvent() throws JSONException, IOException {
         lopTinChi = (LopTinChi) getIntent().getSerializableExtra("loptinchi");
         CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.collapsing_disease_detail);
         collapsingToolbarLayout.setTitle(lopTinChi.getMamonhoc() + " - " + lopTinChi.getMonhoc());
@@ -98,11 +137,31 @@ public class lichhoc extends AppCompatActivity {
         );
     }
 
-    private void loadData() {
-        ds_ngay.add(new Ngay(1L, "27/03/2023"));
-        ds_ngay.add(new Ngay(1L, "27/04/2023"));
-        ds_ngay.add(new Ngay(2L, "27/10/2023"));
-        ds_ngay.add(new Ngay(3L, "27/11/2023"));
+    private void loadData() throws IOException, JSONException {
+        LopTinChiService lopTinChiService = retrofit.create(LopTinChiService.class);
+        Call<ResponseBody> call = lopTinChiService.getLich(lopTinChi.getId());
+        final int[] code = new int[1];
+        Response<ResponseBody> response = call.execute();
+        code[0] = response.code();
+        Toast.makeText(this, "" + code[0], Toast.LENGTH_SHORT).show();
+        if (code[0] == 200) {
+            ds_ngay = new ArrayList<>();
+            JSONArray jsonArray = new JSONArray(response.body().string());
+            int i = 0;
+            while (i<jsonArray.length()) {
+                Long id = new Long(jsonArray.getJSONObject(i).getInt("id"));
+                String ngay = jsonArray.getJSONObject(i).getString("ngay");
+                ds_ngay.add(new Ngay(id,ngay));
+                i++;
+            }
+        } else {
+            Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+        }
+        //test data
+//        ds_ngay.add(new Ngay(1L, "27/03/2023"));
+//        ds_ngay.add(new Ngay(1L, "27/04/2023"));
+//        ds_ngay.add(new Ngay(2L, "27/10/2023"));
+//        ds_ngay.add(new Ngay(3L, "27/11/2023"));
     }
 
     private void setControl() {

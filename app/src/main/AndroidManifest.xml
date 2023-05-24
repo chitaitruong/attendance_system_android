@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -39,8 +39,11 @@
         <activity
             android:name=".loptinchi"
             android:exported="false"
-            android:label="@string/title_activity_main2"
-            android:theme="@style/Theme.Diemdanhsystem.NoActionBar" />
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            />
         <activity
             android:name=".signin"
             android:exported="true">

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/mnTaiKhoan"
+        android:icon="@drawable/baseline_manage_accounts_24"
+        android:title="Thông tin tài khoản" />
+    <item
+        android:id="@+id/mnLop"
+        android:icon="@drawable/baseline_class_24"
+        android:title="Lớp học" />
+    <item
+        android:id="@+id/mnLich"
+        android:icon="@drawable/baseline_calendar_month_24"
+        android:title="Lịch giảng" />
+    <item
+        android:id="@+id/mnDangXuat"
+        android:icon="@drawable/baseline_logout_24"
+        android:title="Đăng xuất" />
+</menu>

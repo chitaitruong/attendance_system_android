@@ -1,5 +1,6 @@
 package ptithcm.chitaitruong.diemdanhsystem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,13 +20,25 @@ import android.widget.Toast;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import okhttp3.ResponseBody;
 import ptithcm.chitaitruong.diemdanhsystem.adapter.DiemDanhListApater;
+import ptithcm.chitaitruong.diemdanhsystem.helper.RetrofitClientCreator;
 import ptithcm.chitaitruong.diemdanhsystem.model.DiemDanh;
 import ptithcm.chitaitruong.diemdanhsystem.model.LopTinChi;
 import ptithcm.chitaitruong.diemdanhsystem.model.Ngay;
+import ptithcm.chitaitruong.diemdanhsystem.payload.request.UpdateDiemDanhRequest;
+import ptithcm.chitaitruong.diemdanhsystem.service.LopTinChiService;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class diemdanh extends AppCompatActivity implements DiemDanhListApater.RecyclerViewActionListener {
     RecyclerView recyclerView;
@@ -37,24 +51,48 @@ public class diemdanh extends AppCompatActivity implements DiemDanhListApater.Re
     DiemDanhListApater diemDanhListApater;
     LopTinChi lopTinChi;
     Ngay ngay;
+    Retrofit retrofit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diemdanh);
+        retrofit = RetrofitClientCreator.getClientWithInterceptor(this);
         getWindow().setExitTransition(null);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Toolbar toolbar = findViewById(R.id.toolbar_class_detail);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setControl();
-        setEvent();
+        try {
+            setEvent();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.detail_class_menu, menu);
         return true;
     }
-    private void setEvent() {
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                super.onBackPressed();
+                return true;
+            case R.id.xuatfile:
+                Toast.makeText(this, "Xuat file", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.help:
+                Toast.makeText(this, "Help", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    private void setEvent() throws JSONException, IOException {
 
         lopTinChi = (LopTinChi) getIntent().getSerializableExtra("loptinchi");
         ngay = (Ngay) getIntent().getSerializableExtra("ngay");
@@ -101,7 +139,7 @@ public class diemdanh extends AppCompatActivity implements DiemDanhListApater.Re
                 ds_diemdanh.clear();
                 if (items[i].equals("Present")) {
                     for (DiemDanh diemDanh : tam) {
-                        if (diemDanh.getTrangThai() == 1L) {
+                        if (diemDanh.getTrangThai() == 2L) {
                             ds_diemdanh.add(diemDanh);
                         }
                         diemDanhListApater.notifyDataSetChanged();
@@ -109,7 +147,7 @@ public class diemdanh extends AppCompatActivity implements DiemDanhListApater.Re
 
                 } else  if (items[i].equals("Late")) {
                     for (DiemDanh diemDanh : tam) {
-                        if (diemDanh.getTrangThai() == 2L) {
+                        if (diemDanh.getTrangThai() == 1L) {
                             ds_diemdanh.add(diemDanh);
                         }
                         diemDanhListApater.notifyDataSetChanged();
@@ -134,33 +172,80 @@ public class diemdanh extends AppCompatActivity implements DiemDanhListApater.Re
         });
     }
     @Override
-    public void onViewClicked(int clickedViewId, int clickedItemPosition) {
+    public void onViewClicked(int clickedViewId, int clickedItemPosition) throws IOException, JSONException {
         switch (clickedViewId){
-            case R.id.layout_click1:
+            /*case R.id.layout_click1:
                 ds_diemdanh.get(clickedItemPosition).setTrangThai(1L);
                 diemDanhListApater.notifyDataSetChanged();
-                break;
+                break;*/
             case R.id.radio_present:
-                if (ds_diemdanh.get(clickedItemPosition).getTrangThai() != 1L) {
-                    ds_diemdanh.get(clickedItemPosition).setTrangThai(1L);
-                    diemDanhListApater.notifyDataSetChanged();
+                DiemDanh dd = ds_diemdanh.get(clickedItemPosition);
+                if (dd.getTrangThai() != 2L) {
+                    UpdateDiemDanhRequest updateDiemDanhRequest = new UpdateDiemDanhRequest(dd.getSinhvienId(), ngay.getId(), lopTinChi.getId(),dd.getGhiChu(), 2L);
+                    LopTinChiService lopTinChiService = retrofit.create(LopTinChiService.class);
+                    Call<ResponseBody> call = lopTinChiService.updateDiemDanh(updateDiemDanhRequest);
+                    final int[] code = new int[1];
+                    Response<ResponseBody> response = call.execute();
+                    code[0] = response.code();
+                    Toast.makeText(this, "" + code[0], Toast.LENGTH_SHORT).show();
+                    if (code[0] == 200) {
+                        JSONObject jsonObject = new JSONObject(response.body().string());
+                        dd.setTrangThai(2L);
+                        dd.setGhiChu(jsonObject.getString("ghi_chu"));
+                        dd.setNgayCapNhat(jsonObject.getString("thoi_gian_cap_nhat"));
+                        dd.setNgayDiemDiemDanh(jsonObject.getString("thoi_gian_quet_van_tay"));
+                        diemDanhListApater.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 break;
             case R.id.radio_absent:
-                if (ds_diemdanh.get(clickedItemPosition).getTrangThai() != 0L) {
-                    ds_diemdanh.get(clickedItemPosition).setTrangThai(0L);
-                    diemDanhListApater.notifyDataSetChanged();
+                dd = ds_diemdanh.get(clickedItemPosition);
+                if (dd.getTrangThai() != 0L) {
+                    UpdateDiemDanhRequest updateDiemDanhRequest = new UpdateDiemDanhRequest(dd.getSinhvienId(), ngay.getId(), lopTinChi.getId(),dd.getGhiChu(), 0L);
+                    LopTinChiService lopTinChiService = retrofit.create(LopTinChiService.class);
+                    Call<ResponseBody> call = lopTinChiService.updateDiemDanh(updateDiemDanhRequest);
+                    final int[] code = new int[1];
+                    Response<ResponseBody> response = call.execute();
+                    code[0] = response.code();
+                    Toast.makeText(this, "" + code[0], Toast.LENGTH_SHORT).show();
+                    if (code[0] == 200) {
+                        JSONObject jsonObject = new JSONObject(response.body().string());
+                        dd.setTrangThai(0L);
+                        dd.setGhiChu(jsonObject.getString("ghi_chu"));
+                        dd.setNgayCapNhat(jsonObject.getString("thoi_gian_cap_nhat"));
+                        dd.setNgayDiemDiemDanh(jsonObject.getString("thoi_gian_quet_van_tay"));
+                        diemDanhListApater.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 break;
             case R.id.radio_late:
-                if (ds_diemdanh.get(clickedItemPosition).getTrangThai() != 2L) {
-                    ds_diemdanh.get(clickedItemPosition).setTrangThai(2L);
-                    diemDanhListApater.notifyDataSetChanged();
+                dd = ds_diemdanh.get(clickedItemPosition);
+                if (dd.getTrangThai() != 1L) {
+                    UpdateDiemDanhRequest updateDiemDanhRequest = new UpdateDiemDanhRequest(dd.getSinhvienId(), ngay.getId(), lopTinChi.getId(),dd.getGhiChu(), 1L);
+                    LopTinChiService lopTinChiService = retrofit.create(LopTinChiService.class);
+                    Call<ResponseBody> call = lopTinChiService.updateDiemDanh(updateDiemDanhRequest);
+                    final int[] code = new int[1];
+                    Response<ResponseBody> response = call.execute();
+                    code[0] = response.code();
+                    Toast.makeText(this, "" + code[0], Toast.LENGTH_SHORT).show();
+                    if (code[0] == 200) {
+                        JSONObject jsonObject = new JSONObject(response.body().string());
+                        dd.setTrangThai(1L);
+                        dd.setGhiChu(jsonObject.getString("ghi_chu"));
+                        dd.setNgayCapNhat(jsonObject.getString("thoi_gian_cap_nhat"));
+                        dd.setNgayDiemDiemDanh(jsonObject.getString("thoi_gian_quet_van_tay"));
+                        diemDanhListApater.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 break;
         }
     }
-
     @Override
     public void onViewLongClicked(int clickedViewId, int clickedItemPosition) {
         switch (clickedViewId){
@@ -170,10 +255,34 @@ public class diemdanh extends AppCompatActivity implements DiemDanhListApater.Re
         }
 
     }
-    private void loadData() {
-        ds_diemdanh.add(new DiemDanh(1L, "N19DCAT067","Truong Chi Tai",1L,"","",""));
-        ds_diemdanh.add(new DiemDanh(2L, "N19DCAT068","Truong Chi ABC",0L,"","",""));
-        ds_diemdanh.add(new DiemDanh(3L, "N19DCAT069","Truong Chi XYZ",2L,"","",""));
+    private void loadData() throws IOException, JSONException {
+        LopTinChiService lopTinChiService = retrofit.create(LopTinChiService.class);
+        Call<ResponseBody> call = lopTinChiService.getDiemDanh(lopTinChi.getId(), ngay.getId());
+        final int[] code = new int[1];
+        Response<ResponseBody> response = call.execute();
+        code[0] = response.code();
+        Toast.makeText(this, "" + code[0], Toast.LENGTH_SHORT).show();
+        if (code[0] == 200) {
+            ds_diemdanh = new ArrayList<>();
+            JSONArray jsonArray = new JSONArray(response.body().string());
+            int i = 0;
+            while (i<jsonArray.length()) {
+                Long id = new Long(jsonArray.getJSONObject(i).getInt("id"));
+                String hoten = jsonArray.getJSONObject(i).getString("hoten");
+                String username = jsonArray.getJSONObject(i).getString("username");
+                Long trangthai = new Long(jsonArray.getJSONObject(i).getInt("trang_thai"));
+                String ghichu = jsonArray.getJSONObject(i).getString("ghi_chu");
+                String thoi_gian_cap_nhat = jsonArray.getJSONObject(i).getString("thoi_gian_cap_nhat");
+                String thoi_gian_quet_van_tay = jsonArray.getJSONObject(i).getString("thoi_gian_quet_van_tay");
+                ds_diemdanh.add(new DiemDanh(id,username,hoten,trangthai,ghichu, thoi_gian_cap_nhat, thoi_gian_quet_van_tay));
+                i++;
+            }
+        } else {
+            Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+        }
+//        ds_diemdanh.add(new DiemDanh(1L, "N19DCAT067","Truong Chi Tai",1L,"","",""));
+//        ds_diemdanh.add(new DiemDanh(2L, "N19DCAT068","Truong Chi ABC",0L,"","",""));
+//        ds_diemdanh.add(new DiemDanh(3L, "N19DCAT069","Truong Chi XYZ",2L,"","",""));
 //        ds_diemdanh.add(new DiemDanh(1L, "N19DCAT067","Truong Chi Tai",1L,"","",""));
 //        ds_diemdanh.add(new DiemDanh(2L, "N19DCAT068","Truong Chi ABC",0L,"","",""));
 //        ds_diemdanh.add(new DiemDanh(3L, "N19DCAT069","Truong Chi XYZ",2L,"","",""));
