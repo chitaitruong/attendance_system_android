@@ -14,7 +14,7 @@
         android:theme="@style/Theme.Diemdanhsystem"
         tools:targetApi="31">
         <activity
-            android:name=".forgotpass"
+            android:name=".quenmatkhau"
             android:exported="false" />
         <activity
             android:name=".DetailLopTinChi"

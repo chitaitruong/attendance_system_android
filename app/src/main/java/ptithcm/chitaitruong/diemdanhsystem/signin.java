@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -22,6 +23,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import okhttp3.ResponseBody;
+import ptithcm.chitaitruong.diemdanhsystem.model.User;
 import ptithcm.chitaitruong.diemdanhsystem.payload.request.LoginRequest;
 import ptithcm.chitaitruong.diemdanhsystem.service.AuthService;
 import ptithcm.chitaitruong.diemdanhsystem.service.TestService;
@@ -51,7 +53,7 @@ public class signin extends AppCompatActivity {
         //retrofit = RetrofitClientCreator.getClientWithInterceptor(this);
         retrofit = new Retrofit.Builder()
 
-                .baseUrl("http://10.252.5.98:8080/api/")
+                .baseUrl("http://192.168.1.2:8080/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -83,7 +85,7 @@ public class signin extends AppCompatActivity {
         tv_forgot_pass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(signin.this, forgotpass.class);
+                Intent intent = new Intent(signin.this, quenmatkhau.class);
                 startActivity(intent);
             }
         });
@@ -107,6 +109,7 @@ public class signin extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject(response.body().string());
             sharedPreferences.edit().putString("PREFS_KEY_TOKEN",jsonObject.getString("accessToken")).apply();
             Toast.makeText(this, "Login success", Toast.LENGTH_SHORT).show();
+            User user = new User(jsonObject.getString("username"), jsonObject.getString("hoten"), jsonObject.getString("email"), jsonObject.getString("phone"), jsonObject.getString("diachi"));
             JSONArray jArray = jsonObject.getJSONArray("roles");
             boolean isAdmin = false;
             if (jArray != null) {
@@ -120,16 +123,16 @@ public class signin extends AppCompatActivity {
 
             if (isAdmin) {
                 Intent intent = new Intent(signin.this, quanlyloptinchi.class);
-                intent.putExtra("username", jsonObject.getString("username"));
+                intent.putExtra("user", user);
                 startActivity(intent);
                 finish();
             } else {
                 Intent intent = new Intent(signin.this, loptinchi.class);
-                intent.putExtra("username", jsonObject.getString("username"));
+                intent.putExtra("user", user);
                 startActivity(intent);
                 finish();
             }
-        } else if (code[0] == 401){
+        } else if (code[0] == 401 || TextUtils.isEmpty(et_username.getText().toString()) || TextUtils.isEmpty(et_password.getText().toString())){
             Toast.makeText(signin.this, "Username or password is invalid", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(signin.this, "Something went wrong", Toast.LENGTH_SHORT).show();
