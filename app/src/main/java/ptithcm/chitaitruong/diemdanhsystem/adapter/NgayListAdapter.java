@@ -93,7 +93,14 @@ public class NgayListAdapter extends RecyclerView.Adapter<NgayListAdapter.ViewHo
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.getTvNgay().setText(ds_ngay.get(position).getNgay());
+        try {
+            if (new SimpleDateFormat("yyyy-MM-dd").parse(ds_ngay.get(position).getNgay()).before(new Date())) {
+                viewHolder.getLayout_click().setBackgroundColor(R.color.Java);
+            }
+            viewHolder.getTvNgay().setText(ds_ngay.get(position).getNgay());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
         viewHolder.getTvBuoi().setText("Buổi " + String.valueOf(position));
 //        DateTimeFormatter formatter = null;
 //        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {

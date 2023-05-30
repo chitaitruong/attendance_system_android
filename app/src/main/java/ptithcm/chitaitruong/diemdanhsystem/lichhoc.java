@@ -7,7 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,19 +34,25 @@ import ptithcm.chitaitruong.diemdanhsystem.adapter.RecyclerItemClickListener;
 import ptithcm.chitaitruong.diemdanhsystem.helper.RetrofitClientCreator;
 import ptithcm.chitaitruong.diemdanhsystem.model.LopTinChi;
 import ptithcm.chitaitruong.diemdanhsystem.model.Ngay;
+import ptithcm.chitaitruong.diemdanhsystem.payload.request.LoginRequest;
+import ptithcm.chitaitruong.diemdanhsystem.payload.request.XuatFileRequest;
+import ptithcm.chitaitruong.diemdanhsystem.service.AuthService;
 import ptithcm.chitaitruong.diemdanhsystem.service.LopTinChiService;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class lichhoc extends AppCompatActivity {
     RecyclerView recyclerView;
     TextView hocky_detail;
     ImageView imageView;
-    Retrofit retrofit;
+    Retrofit retrofit, retrofit2;
     ArrayList<Ngay> ds_ngay = new ArrayList<>();
     LopTinChi lopTinChi;
     NgayListAdapter ngayListAdapter;
+    DownloadManager manager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +63,11 @@ public class lichhoc extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar_class_detail1);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        retrofit2 = new Retrofit.Builder()
+
+                .baseUrl("http://192.168.1.2:8000/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
         setControl();
         try {
             setEvent();
@@ -78,7 +92,20 @@ public class lichhoc extends AppCompatActivity {
                 super.onBackPressed();
                 return true;
             case R.id.xuatfile:
-                Toast.makeText(this, "Xuat file", Toast.LENGTH_SHORT).show();
+                //request tao file
+                String file_name = "DiemDanh_" + lopTinChi.getMamonhoc() + "_" + lopTinChi.getMonhoc() + "_" + lopTinChi.getNamhoc() + "_" + lopTinChi.getHocky();
+                LopTinChiService lopTinChiService = retrofit2.create(LopTinChiService.class);
+                Call<ResponseBody> call = lopTinChiService.xuatfile(new XuatFileRequest(lopTinChi.getId(), file_name));
+                try {
+                    call.execute();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+                Uri uri = Uri.parse("http://192.168.1.2:9000/" + file_name + ".xlsx");
+                DownloadManager.Request request = new DownloadManager.Request(uri);
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+                long reference = manager.enqueue(request);
                 return true;
             case R.id.help:
                 Toast.makeText(this, "Help", Toast.LENGTH_SHORT).show();

@@ -7,9 +7,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.app.DownloadManager;
+import android.content.Context;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,6 +25,8 @@ import android.widget.Toast;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
+import org.eazegraph.lib.charts.PieChart;
+import org.eazegraph.lib.models.PieModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,10 +42,12 @@ import ptithcm.chitaitruong.diemdanhsystem.model.DiemDanh;
 import ptithcm.chitaitruong.diemdanhsystem.model.LopTinChi;
 import ptithcm.chitaitruong.diemdanhsystem.model.Ngay;
 import ptithcm.chitaitruong.diemdanhsystem.payload.request.UpdateDiemDanhRequest;
+import ptithcm.chitaitruong.diemdanhsystem.payload.request.XuatFileRequest;
 import ptithcm.chitaitruong.diemdanhsystem.service.LopTinChiService;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class diemdanh extends AppCompatActivity implements DiemDanhListApater.RecyclerViewActionListener {
     RecyclerView recyclerView;
@@ -51,7 +60,9 @@ public class diemdanh extends AppCompatActivity implements DiemDanhListApater.Re
     DiemDanhListApater diemDanhListApater;
     LopTinChi lopTinChi;
     Ngay ngay;
-    Retrofit retrofit;
+    Retrofit retrofit, retrofit2;
+    PieChart pieChart;
+    DownloadManager manager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +73,11 @@ public class diemdanh extends AppCompatActivity implements DiemDanhListApater.Re
         Toolbar toolbar = findViewById(R.id.toolbar_class_detail);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        retrofit2 = new Retrofit.Builder()
+
+                .baseUrl("http://192.168.1.2:8000/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
         setControl();
         try {
             setEvent();
@@ -70,7 +86,15 @@ public class diemdanh extends AppCompatActivity implements DiemDanhListApater.Re
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        setData();
     }
+
+    private void setData() {
+        pieChart.setUseInnerValue(true);
+        // To animate the pie chart
+        pieChart.startAnimation();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.detail_class_menu, menu);
@@ -83,7 +107,19 @@ public class diemdanh extends AppCompatActivity implements DiemDanhListApater.Re
                 super.onBackPressed();
                 return true;
             case R.id.xuatfile:
-                Toast.makeText(this, "Xuat file", Toast.LENGTH_SHORT).show();
+                String file_name = "DiemDanh_" + lopTinChi.getMamonhoc() + "_" + lopTinChi.getMonhoc() + "_" + lopTinChi.getNamhoc() + "_" + lopTinChi.getHocky();
+                LopTinChiService lopTinChiService = retrofit2.create(LopTinChiService.class);
+                Call<ResponseBody> call = lopTinChiService.xuatfile(new XuatFileRequest(lopTinChi.getId(), file_name));
+                try {
+                    call.execute();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+                Uri uri = Uri.parse("http://192.168.1.2:9000/" + file_name + ".xlsx");
+                DownloadManager.Request request = new DownloadManager.Request(uri);
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+                long reference = manager.enqueue(request);
                 return true;
             case R.id.help:
                 Toast.makeText(this, "Help", Toast.LENGTH_SHORT).show();
@@ -142,7 +178,7 @@ public class diemdanh extends AppCompatActivity implements DiemDanhListApater.Re
                         if (diemDanh.getTrangThai() == 2L) {
                             ds_diemdanh.add(diemDanh);
                         }
-                        diemDanhListApater.notifyDataSetChanged();
+
                     }
 
                 } else  if (items[i].equals("Late")) {
@@ -150,19 +186,20 @@ public class diemdanh extends AppCompatActivity implements DiemDanhListApater.Re
                         if (diemDanh.getTrangThai() == 1L) {
                             ds_diemdanh.add(diemDanh);
                         }
-                        diemDanhListApater.notifyDataSetChanged();
+
                     }
                 } else  if (items[i].equals("Absent")) {
                     for (DiemDanh diemDanh : tam) {
                         if (diemDanh.getTrangThai() == 0L) {
                             ds_diemdanh.add(diemDanh);
                         }
-                        diemDanhListApater.notifyDataSetChanged();
+
                     }
                 } else {
                     ds_diemdanh.addAll(tam);
-                    diemDanhListApater.notifyDataSetChanged();
                 }
+                pieChart.setInnerValueString(String.valueOf(ds_diemdanh.size()));
+                diemDanhListApater.notifyDataSetChanged();
             }
 
             @Override
@@ -170,6 +207,7 @@ public class diemdanh extends AppCompatActivity implements DiemDanhListApater.Re
 
             }
         });
+
     }
     @Override
     public void onViewClicked(int clickedViewId, int clickedItemPosition) throws IOException, JSONException {
@@ -262,6 +300,7 @@ public class diemdanh extends AppCompatActivity implements DiemDanhListApater.Re
         Response<ResponseBody> response = call.execute();
         code[0] = response.code();
         Toast.makeText(this, "" + code[0], Toast.LENGTH_SHORT).show();
+        int late = 0, present = 0, absent = 0;
         if (code[0] == 200) {
             ds_diemdanh = new ArrayList<>();
             JSONArray jsonArray = new JSONArray(response.body().string());
@@ -271,12 +310,34 @@ public class diemdanh extends AppCompatActivity implements DiemDanhListApater.Re
                 String hoten = jsonArray.getJSONObject(i).getString("hoten");
                 String username = jsonArray.getJSONObject(i).getString("username");
                 Long trangthai = new Long(jsonArray.getJSONObject(i).getInt("trang_thai"));
+                if (trangthai == 2L) {
+                    present += 1;
+                } else if (trangthai == 1L) {
+                    late += 1;
+                } else {
+                    absent += 1;
+                }
                 String ghichu = jsonArray.getJSONObject(i).getString("ghi_chu");
                 String thoi_gian_cap_nhat = jsonArray.getJSONObject(i).getString("thoi_gian_cap_nhat");
                 String thoi_gian_quet_van_tay = jsonArray.getJSONObject(i).getString("thoi_gian_quet_van_tay");
                 ds_diemdanh.add(new DiemDanh(id,username,hoten,trangthai,ghichu, thoi_gian_cap_nhat, thoi_gian_quet_van_tay));
                 i++;
             }
+            pieChart.addPieSlice(
+                    new PieModel(
+                            "Late",
+                            late,
+                            Color.parseColor("#FFA726")));
+            pieChart.addPieSlice(
+                    new PieModel(
+                            "Present",
+                            present,
+                            Color.parseColor("#66BB6A")));
+            pieChart.addPieSlice(
+                    new PieModel(
+                            "Absent",
+                            absent,
+                            Color.parseColor("#EF5350")));
         } else {
             Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
         }
@@ -305,6 +366,7 @@ public class diemdanh extends AppCompatActivity implements DiemDanhListApater.Re
         ngay_detail = (TextView) findViewById(R.id.ngay_detail);
         imageView = (ImageView) findViewById(R.id.image_disease_detail);
         spinner = (Spinner) findViewById(R.id.spinner1);
+        pieChart = findViewById(R.id.piechart);
     }
 
 //    @Override

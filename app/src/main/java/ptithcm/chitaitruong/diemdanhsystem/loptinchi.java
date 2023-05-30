@@ -43,6 +43,7 @@ import ptithcm.chitaitruong.diemdanhsystem.adapter.ClassListAdapter;
 import ptithcm.chitaitruong.diemdanhsystem.adapter.RecyclerItemClickListener;
 import ptithcm.chitaitruong.diemdanhsystem.helper.RetrofitClientCreator;
 import ptithcm.chitaitruong.diemdanhsystem.model.LopTinChi;
+import ptithcm.chitaitruong.diemdanhsystem.model.User;
 import ptithcm.chitaitruong.diemdanhsystem.service.LopTinChiService;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -127,14 +128,14 @@ public class loptinchi extends AppCompatActivity {
                     }
                 })
         );
-        Toast.makeText(this, sharedPreferences.getString("PREFS_KEY_TOKEN",null), Toast.LENGTH_SHORT).show();
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name);
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         View hView =  navigationView.getHeaderView(0);
         TextView nav_user = (TextView)hView.findViewById(R.id.hoten);
-        nav_user.setText(getIntent().getStringExtra("username").toString());
+        User user = (User)getIntent().getSerializableExtra("user");
+        nav_user.setText(user.getHoten());
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -149,14 +150,14 @@ public class loptinchi extends AppCompatActivity {
                         */
                         dangxuat();
                         break;
-                    case R.id.mnTaiKhoan:
-                        /*Toast.makeText(loptinchi.this, "Cai dat", Toast.LENGTH_SHORT).show();
-                        if (settingFragment == null) {
-                            settingFragment = new SettingFragment();
-                        }
-                        getSupportFragmentManager().beginTransaction().replace(R.id.Content, settingFragment).commit();
-                        */
-                        break;
+//                    case R.id.mnTaiKhoan:
+//                        /*Toast.makeText(loptinchi.this, "Cai dat", Toast.LENGTH_SHORT).show();
+//                        if (settingFragment == null) {
+//                            settingFragment = new SettingFragment();
+//                        }
+//                        getSupportFragmentManager().beginTransaction().replace(R.id.Content, settingFragment).commit();
+//                        */
+//                        break;
                     case R.id.mnLop:
                         /*Toast.makeText(loptinchi.this, "Cai dat", Toast.LENGTH_SHORT).show();
                         if (settingFragment == null) {
@@ -212,7 +213,6 @@ public class loptinchi extends AppCompatActivity {
         final int[] code = new int[1];
         Response<ResponseBody> response = call.execute();
         code[0] = response.code();
-        Toast.makeText(this, "" + code[0], Toast.LENGTH_SHORT).show();
         if (code[0] == 200) {
             data_loptinchi = new ArrayList<>();
             JSONArray jsonArray = new JSONArray(response.body().string());

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/mnTaiKhoan"
-        android:icon="@drawable/baseline_manage_accounts_24"
-        android:title="Thông tin tài khoản" />
+<!--    <item-->
+<!--        android:id="@+id/mnTaiKhoan"-->
+<!--        android:icon="@drawable/baseline_manage_accounts_24"-->
+<!--        android:title="Thông tin tài khoản" />-->
     <item
         android:id="@+id/mnLop"
         android:icon="@drawable/baseline_class_24"
